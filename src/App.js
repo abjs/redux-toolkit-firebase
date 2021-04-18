@@ -3,6 +3,7 @@ import GoogleAuth from "./auth/GoogleAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { auth } from "./firebase";
 import {
+  setuseremailVerified,
   setUserLogout,
   setUserName,
   setUserEmail,
@@ -11,6 +12,7 @@ import {
 } from "./features/userSlice";
 function App() {
   const dispatch = useDispatch();
+  const useremailVerified = useSelector(setuseremailVerified);
   const userName = useSelector(setUserName);
   const userEmail = useSelector(setUserEmail);
   const userPhotoURL = useSelector(setUserPhotoURL);
@@ -25,8 +27,7 @@ function App() {
             userName,
             userEmail,
             userPhotoURL,
-            // logout: true,
-            // login: false,
+            useremailVerified
           })
         );
       })
@@ -35,10 +36,11 @@ function App() {
       });
   };
   useEffect(() => {
-    console.log("user login ",login);
-  }, [login]);
+    console.log("user login ",login,"useremailVerified",useremailVerified);
+  }, [login, useremailVerified]);
   return (
     <div>
+      {login && <p className="AppUseremailVerified" >useremailVerified: {useremailVerified ? "Verified" : "Not Verified"}</p>}
       {userName && <p className="AppUserName">Name : {userName}</p>}
       {userEmail && <p className="AppUserEmail">Email : {userEmail}</p>}
       {userPhotoURL !== null && <img src={userPhotoURL} alt="" />}

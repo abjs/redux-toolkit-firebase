@@ -10,11 +10,13 @@ function GoogleAuth() {
   const logout = useSelector(UserLogout);
   const SignIn = () => {
     auth.signInWithPopup(GoogleAuthProvider).then((e) => {
+      console.log(e);
       dispatch(
         setActiveUser({
           userName: e.user.displayName,
           userEmail: e.user.email,
           userPhotoURL: e.user.photoURL,
+          useremailVerified:e.user.emailVerified,
           logout: false,
           login: true,
         })
