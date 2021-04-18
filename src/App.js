@@ -1,56 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
-
+import React, { useEffect } from "react";
+import GoogleAuth from "./auth/GoogleAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { auth } from "./firebase";
+import {
+  setUserLogout,
+  setUserName,
+  setUserEmail,
+  setUserPhotoURL,
+  UserLogin
+} from "./features/userSlice";
 function App() {
+  const dispatch = useDispatch();
+  const userName = useSelector(setUserName);
+  const userEmail = useSelector(setUserEmail);
+  const userPhotoURL = useSelector(setUserPhotoURL);
+  const login = useSelector(UserLogin);
+  const SignOut = () => {
+    console.log("SiginOut");
+    auth
+      .signOut()
+      .then(() => {
+        dispatch(
+          setUserLogout({
+            userName,
+            userEmail,
+            userPhotoURL,
+            // logout: true,
+            // login: false,
+          })
+        );
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+  useEffect(() => {
+    console.log("user login ",login);
+  }, [login]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+    <div>
+      {userName && <p className="AppUserName">Name : {userName}</p>}
+      {userEmail && <p className="AppUserEmail">Email : {userEmail}</p>}
+      {userPhotoURL !== null && <img src={userPhotoURL} alt="" />}
+      <GoogleAuth />
+      {login && <button onClick={SignOut}>Sign Out</button>}
     </div>
   );
 }
