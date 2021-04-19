@@ -10,6 +10,7 @@ import {
   setUserPhotoURL,
   UserLogin,
 } from "./features/userSlice";
+import {setActiveUser} from "./features/userSlice";
 function App() {
   const dispatch = useDispatch();
   const useremailVerified = useSelector(setuseremailVerified);
@@ -22,22 +23,46 @@ function App() {
     auth
       .signOut()
       .then(() => {
-        dispatch(
-          setUserLogout({
-            userName,
-            userEmail,
-            userPhotoURL,
-            useremailVerified,
-          })
-        );
+        console.log("user sign out Sussess")
       })
       .catch((e) => {
         console.log(e);
       });
   };
   useEffect(() => {
-    console.log("user login ", login, "useremailVerified", useremailVerified);
-  }, [login, useremailVerified]);
+    // console.log("user login ", login, "useremailVerified", useremailVerified);
+    // AuthState()
+    auth.onAuthStateChanged((user) => {
+      if(user){
+        console.log("user is Loged In")
+        dispatch(
+          setActiveUser({
+            userName: user.displayName,
+            userEmail: user.email,
+            userPhotoURL: user.photoURL,
+            useremailVerified: user.emailVerified,
+            logout: false,
+            login: true,
+          })
+        );
+      }
+      else{
+        console.log("user is not loged In")
+        dispatch(
+          setUserLogout({
+            userName,
+            userEmail,
+            userPhotoURL,
+            useremailVerified: false,
+            logout: true,
+            login: false,
+          })
+        );
+      }
+    });
+  });
+
+
   return (
     <div>
       {login && (
@@ -53,7 +78,7 @@ function App() {
       )}
       {userPhotoURL !== null && <img src={userPhotoURL} alt="" />}
       <GoogleAuth />
-      {useremailVerified && <button>Send Email For Verification</button>}
+      {!useremailVerified && login && <button>Send Email For Verification</button>}
       {login && <button onClick={SignOut}>Sign Out</button>}
     </div>
   );
