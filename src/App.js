@@ -8,7 +8,7 @@ import {
   setUserName,
   setUserEmail,
   setUserPhotoURL,
-  UserLogin
+  UserLogin,
 } from "./features/userSlice";
 function App() {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ function App() {
             userName,
             userEmail,
             userPhotoURL,
-            useremailVerified
+            useremailVerified,
           })
         );
       })
@@ -36,15 +36,24 @@ function App() {
       });
   };
   useEffect(() => {
-    console.log("user login ",login,"useremailVerified",useremailVerified);
+    console.log("user login ", login, "useremailVerified", useremailVerified);
   }, [login, useremailVerified]);
   return (
     <div>
-      {login && <p className="AppUseremailVerified" >useremailVerified: {useremailVerified ? "Verified" : "Not Verified"}</p>}
-      {userName && <p className="AppUserName">Name : {userName}</p>}
-      {userEmail && <p className="AppUserEmail">Email : {userEmail}</p>}
+      {login && (
+        <p className="AppUseremailVerified">
+          useremailVerified: {useremailVerified ? "Verified" : "Not Verified"}
+        </p>
+      )}
+      {useremailVerified && userName && (
+        <p className="AppUserName">Name : {userName}</p>
+      )}
+      {useremailVerified && userEmail && (
+        <p className="AppUserEmail">Email : {userEmail}</p>
+      )}
       {userPhotoURL !== null && <img src={userPhotoURL} alt="" />}
       <GoogleAuth />
+      {useremailVerified && <button>Send Email For Verification</button>}
       {login && <button onClick={SignOut}>Sign Out</button>}
     </div>
   );
