@@ -45,10 +45,15 @@ function App() {
           useremailVerified: {useremailVerified ? "Verified" : "Not Verified"}
         </p>
       )}
-      {userName && <p className="AppUserName">Name : {userName}</p>}
-      {userEmail && <p className="AppUserEmail">Email : {userEmail}</p>}
+      {useremailVerified && userName && (
+        <p className="AppUserName">Name : {userName}</p>
+      )}
+      {useremailVerified && userEmail && (
+        <p className="AppUserEmail">Email : {userEmail}</p>
+      )}
       {userPhotoURL !== null && <img src={userPhotoURL} alt="" />}
       <GoogleAuth />
+      {useremailVerified && <button>Send Email For Verification</button>}
       {login && <button onClick={SignOut}>Sign Out</button>}
     </div>
   );
