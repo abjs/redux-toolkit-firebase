@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import GoogleAuth from "./auth/GoogleAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { auth } from "./firebase";
@@ -10,9 +10,10 @@ import {
   setUserPhotoURL,
   UserLogin,
 } from "./features/userSlice";
-import {setActiveUser} from "./features/userSlice";
+import { setActiveUser } from "./features/userSlice";
 function App() {
   const dispatch = useDispatch();
+  const [pending, setPending] = useState(true);
   const useremailVerified = useSelector(setuseremailVerified);
   const userName = useSelector(setUserName);
   const userEmail = useSelector(setUserEmail);
@@ -23,7 +24,7 @@ function App() {
     auth
       .signOut()
       .then(() => {
-        console.log("user sign out Sussess")
+        console.log("user sign out Sussess");
       })
       .catch((e) => {
         console.log(e);
@@ -33,8 +34,8 @@ function App() {
     // console.log("user login ", login, "useremailVerified", useremailVerified);
     // AuthState()
     auth.onAuthStateChanged((user) => {
-      if(user){
-        console.log("user is Loged In")
+      if (user) {
+        console.log("user is Loged In");
         dispatch(
           setActiveUser({
             userName: user.displayName,
@@ -45,9 +46,9 @@ function App() {
             login: true,
           })
         );
-      }
-      else{
-        console.log("user is not loged In")
+        setPending(false )
+      } else {
+        console.log("user is not loged In");
         dispatch(
           setUserLogout({
             userName,
@@ -61,8 +62,10 @@ function App() {
       }
     });
   });
-
-
+  if(pending){
+    return <div> <h1>Loding...</h1> </div>
+  }
+  else{  
   return (
     <div>
       {login && (
@@ -78,10 +81,13 @@ function App() {
       )}
       {userPhotoURL !== null && <img src={userPhotoURL} alt="" />}
       <GoogleAuth />
-      {!useremailVerified && login && <button>Send Email For Verification</button>}
+      {!useremailVerified && login && (
+        <button>Send Email For Verification</button>
+      )}
       {login && <button onClick={SignOut}>Sign Out</button>}
     </div>
   );
+}
 }
 
 export default App;
